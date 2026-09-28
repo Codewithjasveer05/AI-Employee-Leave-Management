@@ -1,0 +1,82 @@
+﻿@using System.Net
+@using System.Text.RegularExpressions
+@{
+    ViewData["Title"] = "AI Leave Analysis";
+}
+
+@functions {
+    // Converts simple markdown from the AI (**bold**, * bullets) into safe HTML
+    public static string FormatAi(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return "";
+
+        var sb = new System.Text.StringBuilder();
+        bool inList = false;
+
+        foreach (var rawLine in text.Replace("\r", "").Split('\n'))
+        {
+            // encode first so no HTML can be injected
+            var line = WebUtility.HtmlEncode(rawLine.Trim());
+            line = Regex.Replace(line, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
+
+            bool isBullet = line.StartsWith("* ") || line.StartsWith("- ");
+
+            if (isBullet)
+            {
+                if (!inList) { sb.Append("<ul class=\"mb-2\">"); inList = true; }
+                sb.Append("<li>").Append(line.Substring(2).Trim()).Append("</li>");
+            }
+            else
+            {
+                if (inList) { sb.Append("</ul>"); inList = false; }
+                if (line.Length > 0) sb.Append("<p class=\"mb-2\">").Append(line).Append("</p>");
+            }
+        }
+
+        if (inList) sb.Append("</ul>");
+        return sb.ToString();
+    }
+}
+
+<h2 class="mb-3">AI Leave Pattern Analysis</h2>
+
+<div class="row mb-4 text-center">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6>Total Requests</h6><h3>@ViewBag.Total</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6>Approved</h6><h3>@ViewBag.Approved</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning">
+            <div class="card-body">
+                <h6>Pending</h6><h3>@ViewBag.Pending</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h6>Rejected</h6><h3>@ViewBag.Rejected</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>Data sent to AI</h5>
+<pre class="border p-3 bg-light">@ViewBag.Summary</pre>
+
+<h5>AI Suggestions</h5>
+<div class="alert alert-info">
+    @Html.Raw(FormatAi(ViewBag.Suggestion as string))
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

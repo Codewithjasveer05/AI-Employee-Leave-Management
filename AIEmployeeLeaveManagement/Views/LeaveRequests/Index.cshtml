@@ -1,0 +1,77 @@
+﻿@model IEnumerable<AIEmployeeLeaveManagement.Models.LeaveRequest>
+
+@{
+    ViewData["Title"] = "Leave Records";
+}
+
+<h2 class="mb-3">Employee Leave Records</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<div class="d-flex justify-content-between mb-3">
+    <a asp-action="Create" class="btn btn-primary">+ Apply for Leave</a>
+
+    <form asp-action="Index" method="get" class="d-flex">
+        <input type="text" name="search" value="@ViewBag.Search" class="form-control me-2" placeholder="Search employee name" />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Leave Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Days</th>
+                <th>Reason</th>
+                <th>Applied On</th>
+                <th>Status</th>
+                <th style="min-width:260px">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var badge = item.Status == "Approved" ? "bg-success"
+                : item.Status == "Rejected" ? "bg-danger"
+                : "bg-warning text-dark";
+                <tr>
+                    <td>@item.EmployeeName</td>
+                    <td>@item.Department</td>
+                    <td>@item.LeaveType</td>
+                    <td>@item.StartDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.EndDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.TotalDays</td>
+                    <td>@item.Reason</td>
+                    <td>@item.AppliedOn.ToString("dd-MMM-yyyy")</td>
+                    <td><span class="badge @badge">@item.Status</span></td>
+                    <td>
+                        <form asp-action="SetStatus" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" name="status" value="Approved" class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" name="status" value="Rejected" class="btn btn-warning btn-sm">Reject</button>
+                        </form>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Are you sure you want to delete this record?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="10" class="text-center">No leave records found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,12 @@
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.tmp
+*.Backup.tmp
+Debug/
+Release/
+x64/
+x86/
+*.rsuser

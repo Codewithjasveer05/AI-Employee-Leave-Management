@@ -1,0 +1,78 @@
+﻿@model AIEmployeeLeaveManagement.Models.LeaveRequest
+
+@{
+    ViewData["Title"] = "Edit Leave";
+}
+
+<h2>Edit Leave Request</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="AppliedOn" />
+
+            <div class="mb-3">
+                <label asp-for="EmployeeName" class="form-label"></label>
+                <input asp-for="EmployeeName" class="form-control" />
+                <span asp-validation-for="EmployeeName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Department" class="form-label"></label>
+                <select asp-for="Department" class="form-select">
+                    <option value="">-- Select Department --</option>
+                    <option>HR</option>
+                    <option>IT</option>
+                    <option>Finance</option>
+                    <option>Sales</option>
+                    <option>Operations</option>
+                </select>
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LeaveType" class="form-label"></label>
+                <select asp-for="LeaveType" class="form-select">
+                    <option value="">-- Select Leave Type --</option>
+                    <option>Sick Leave</option>
+                    <option>Casual Leave</option>
+                    <option>Earned Leave</option>
+                    <option>Maternity/Paternity Leave</option>
+                </select>
+                <span asp-validation-for="LeaveType" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EndDate" class="form-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Reason" class="form-label"></label>
+                <textarea asp-for="Reason" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

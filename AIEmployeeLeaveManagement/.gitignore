@@ -1,0 +1,14 @@
+@"
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.tmp
+*.Backup.tmp
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.rsuser
+"@ | Out-File -Encoding utf8 .gitignore		
